@@ -3,22 +3,26 @@ library(dplyr)
 library(data.table)
 library(lattice)
 
+#This finds the size of the file
 file.info("C:/Users/Kyle/Downloads/exdata%2Fdata%2Fhousehold_
 power_consumption/household_power_consumption.txt")
 
 fpath <- "C:/Users/Kyle/Downloads/exdata%2Fdata%2Fhousehold_power_consumption/household_power_consumption.txt"
 setwd("C:/Users/Kyle/Downloads/exdata%2Fdata%2Fhousehold_power_consumption")
 
+#Import the data and change the ? to NA
 dataP <- read.table(fpath, sep=";", header=TRUE,stringsAsFactors = FALSE)
 dataP[dataP == "?"] <- NA 
 View(dataP)
 
+#Creates new date combined with time variable
+#Also changes date to the YYYY-MM-DD format
 str(dataP)
 DatewTime <- strptime(paste(dataP$Date, dataP$Time, sep=" "), "%d/%m/%Y %H:%M:%S")
 dataP <- mutate(dataP, Date = as.Date(dataP$Date,"%d/%m/%Y"))
 dataP <- cbind(DatewTime, dataP)
 
-
+#Gets the subset from the original data set
 dataP <- subset(dataP, Date >= "2007-02-01" & Date <= "2007-02-02")
 dataP <- mutate(dataP, Global_active_power = as.numeric(dataP$Global_active_power))
 gap <- dataP$Global_active_power
